@@ -1,0 +1,96 @@
+<section class="container">
+    <div class="block">
+        <h1 class="title">
+            Programs available in STI PPC
+           </h1>      
+        <a class="button is-primary" (click)="openProgramDialog()">
+            <span class="icon">
+              <i class="fa fa-plus"></i>
+            </span>
+            <span>Add new program</span>
+          </a>
+    </div>
+      
+  <app-programs-card></app-programs-card>
+  
+  </section>
+  
+<!--Modal create and edit-->
+<form (ngSubmit)="onSubmitAddProgram()" ngNativeValidate>
+    <div class="modal" [ngClass]="{'is-active': isProgramDialogOpen}">
+      <div class="modal-background"  (click)="closeProgramDialog()"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Add new program</p>
+          <button class="delete" type="button" aria-label="close" (click)="closeProgramDialog()"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="field">
+            <label class="label">Program type</label>
+            <div class="control has-icons-left">
+                <div class="select">
+                  <select 
+                  name="programType" [(ngModel)]="programType" required>
+                    <option value="" disabled>Program type</option>
+                    <option value="courses">Course</option>
+                    <option value="strands">Strand</option>
+                  </select>
+                </div>
+                <span class="icon is-left">
+                  <i class="fa fa-graduation-cap"></i>
+                </span>
+              </div>
+          </div>
+
+          <ng-container *ngIf="programType">
+
+            <div class="field">
+                <label class="label">Acronym</label>
+                <div class="control">
+                  <input class="input" name="program_acronym" type="text" placeholder="Acronym here"
+                  [(ngModel)]="programDocument.program_acronym" maxlength="300" required>
+                </div>
+              </div>
+      
+              <div class="field">
+                <label class="label">Name</label>
+                <div class="control">
+                  <input class="input" name="program_name" type="text" placeholder="Name here"
+                  [(ngModel)]="programDocument.program_name" required>
+                </div>
+              </div>
+              <div class="field">
+                  <label class="label">Photo</label>
+                  <input type="file" accept="image/*" (change)="uploadHandler($event)" required>
+                </div>
+                <div class="field" *ngIf="uploadPercent">
+                  <progress class="progress is-success show-value" value="{{uploadPercent | async}}" max="100">{{uploadPercent | async}}%</progress>
+                </div>
+              <div class="field">
+                  <label class="label">Description</label>
+                  <div class="control">
+                    <textarea class="textarea" name="program_page_url"  rows="7" type="text" placeholder="Description here"
+                    [(ngModel)]="programDocument.program_description" required></textarea>
+                  </div>
+              </div>
+              <!-- <div class="field">
+                  <label class="label">Photo Url</label>
+                  <div class="control">
+                    <input class="input" name="program_photo_url" type="url" placeholder="Page URL here"
+                    [(ngModel)]="programDocument.program_photo_url" required>
+                  </div>
+              </div> -->
+
+
+        </ng-container>
+
+
+      </section>
+      <footer class="modal-card-foot">
+        <button [disabled]="isProgramDialogFormButtonDisabled" class="button is-success" type="submit">Add</button>
+        <button class="button" type="button" (click)="closeProgramDialog()">Cancel</button>
+      </footer>
+    </div>
+  </div>
+</form>
+

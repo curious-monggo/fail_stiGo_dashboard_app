@@ -1,0 +1,137 @@
+<div class="tabs">
+    <ul>
+      <li [ngClass]="{'is-active': true}">
+        <a>Students</a>
+      </li>
+    </ul>
+  </div>
+    <table class="table is-hoverable is-fullwidth">
+      <thead>
+        <tr>
+          <th>Student Number</th>
+          <th>Student First Name</th>
+          <th>Student Middle Name</th>
+          <th>Student Last Name</th>
+          <th>Student Program</th>
+          <th>Year level</th>
+          <th>Registration code</th>
+     
+        </tr>
+      </thead>
+      <tfoot>
+        <tr>
+          <th>Student Number</th>
+          <th>Student First Name</th>
+          <th>Student Middle Name</th>
+          <th>Student Last Name</th>
+          <th>Student Program</th>
+          <th>Year level</th>
+          <th>Registration code</th>
+          <!-- <th>Options</th> -->
+        </tr>
+      </tfoot>
+      <tbody>
+        <tr *ngFor="let student of studentCollection">
+          <th><a href="#">{{student.student_id_number}}</a></th>
+          <td>{{student.student_first_name}}</td>
+          <td>{{student.student_middle_name}}</td>
+          <td>{{student.student_last_name}}</td>
+          <td>{{student.student_program}}</td>
+          <td>{{student.student_year_level}}</td>
+          <td>{{student.student_registration_code}}</td>
+          <div class="buttons">
+            <a (click)="openStudentsDialogUpdate(student.id)" class="button is-success">
+              <span class="icon">
+                <i class="fa fa-pencil"></i>
+              </span>
+            </a>
+            <a (click)="deleteStudentDocument(student.id)" class="button is-danger">
+              <span class="icon">
+                <i class="fa fa-trash"></i>
+              </span>
+            </a>      
+          </div>
+    
+        </tr>
+      </tbody>
+    </table>
+  
+    <form  (ngSubmit)="onSubmitUpdateStudentDocument()" ngNativeValidate>
+      <div class="modal" [ngClass]="{'is-active': isUsersUpdateDialogOpen}">
+        <div class="modal-background" (click)="closeStudentsDialogUpdate()"></div>
+  
+        <div class="modal-card">
+  
+          <header class="modal-card-head">
+            <p class="modal-card-title">Update student</p>
+            <button class="delete" type="button" aria-label="close" (click)="closeStudentsDialogUpdate()"></button>
+          </header>
+          <section class="modal-card-body">
+            <div class="field">
+              <label class="label">Student ID Number</label>
+              <div class="control">
+                <input class="input" name="student_id_number" type="number" placeholder="Student Number here" [(ngModel)]="studentDocument.student_id_number"
+                  required>
+              </div>
+            </div>
+  
+            <div class="field">
+              <label class="label">Student First Name</label>
+              <div class="control">
+                <input class="input" name="student_first_name" type="text" placeholder="First name here" [(ngModel)]="studentDocument.student_first_name"
+                  required>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Student Middle Name</label>
+              <div class="control">
+                <input class="input" name="student_middle_name" type="text" placeholder="Mddle name here" [(ngModel)]="studentDocument.student_middle_name"
+                  required>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Student Last Name</label>
+              <div class="control">
+                <input class="input" name="student_last_name" type="text" placeholder="Last name here" [(ngModel)]="studentDocument.student_last_name"
+                  required>
+              </div>
+            </div>
+  
+            <div class="field">
+              <label class="label">Student Program</label>
+              <div class="control">
+                <input class="input" name="student_program" type="text" placeholder="Program name here" [(ngModel)]="studentDocument.student_program"
+                  required>
+              </div>
+            </div>
+  
+            <div class="field">
+                <label class="label">Student Year level</label>
+              <div class="control has-icons-left">
+                <div class="select">
+                  <select name="student_year_level" [(ngModel)]="studentDocument.student_year_level" required>
+                    <option value="" disabled>Year level</option>
+                    <option value="Grade 11">Grade 11</option>
+                    <option value="Grade 12">Grade 12</option>
+                    <option value="1st year">1st year</option>
+                    <option value="2nd year">2nd year</option>
+                    <option value="3rd year">3rd year</option>
+                    <option value="4th year">4th year</option>
+                  </select>
+                </div>
+              </div>
+  
+              <span class="icon is-left">
+                <i class="fa fa-user-graduate"></i>
+              </span>
+            </div>
+  
+          </section>
+          <footer class="modal-card-foot">
+            <button class="button is-success" type="submit">Add</button>
+            <button class="button" type="button" (click)="closeStudentsDialogUpdate()">Cancel</button>
+          </footer>
+        </div>
+      </div>
+  </form>  
+

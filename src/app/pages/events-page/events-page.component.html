@@ -1,0 +1,97 @@
+<section class="container">
+  <div class="block">
+    <h1 class="title">
+      Calendar of events in STI PPC
+    </h1>
+    <a class="button is-primary" (click)="openEventsDialog()">
+      <span class="icon">
+        <i class="fa fa-plus"></i>
+      </span>
+      <span>Add new event</span>
+    </a>
+  </div>
+  <app-event-calendar></app-event-calendar>
+</section>
+
+
+
+<!-- Modal create and edit -->
+<form (ngSubmit)="onSubmitCreateEvent()" ngNativeValidate>
+  <div class="modal" [ngClass]="{'is-active': isEventsDialogOpen}">
+    <div class="modal-background" (click)="closeEventsDialog()"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Create new event</p>
+        <button class="delete" type="button" aria-label="close" (click)="closeEventsDialog()"></button>
+      </header>
+      <section class="modal-card-body">
+
+        <div class="field">
+          <label class="label">Event name</label>
+          <div class="control">
+            <input class="input" name="event_name" type="text" placeholder="Event name here" [(ngModel)]="eventDocument.event_name"
+              maxlength="300" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Event description</label>
+          <div class="control">
+            <textarea class="textarea" name="event_description" type="text" rows="3" placeholder="Event description here"
+              [(ngModel)]="eventDocument.event_description" required></textarea>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Event location</label>
+          <div class="control">
+            <input class="input" name="event_location" type="text" placeholder="Event location here" [(ngModel)]="eventDocument.event_location"
+              maxlength="300" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Event color</label>
+          <div class="control">
+            <input class="input" name="event_name" type="text" placeholder="In hex format, Ex: #0000" [(ngModel)]="eventDocument.event_color"
+              maxlength="300" required>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Event date</label>
+          <div class="control">
+            <input class="date" name="event_date" type="date" [(ngModel)]="eventDocument.event_date" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Event start time</label>
+          <div class="control">
+            <input class="date" name="event_time_start" type="time" [(ngModel)]="eventDocument.event_time_start"
+              required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Event end time</label>
+          <div class="control">
+            <input class="date" name="event_time_end" type="time" [(ngModel)]="eventDocument.event_time_end" required>
+          </div>
+        </div>
+        <div class="control">
+            <label class="radio">
+              <input type="radio" name="attendance" [checked]="isAttendanceEnabled" (click)="enableAttendance()">
+              Enable attendance 
+            </label>
+            <label class="radio">
+              <input type="radio" name="attendance" [checked]="!isAttendanceEnabled" (click)="disableAttendance()">
+              Disable attendance 
+            </label>
+          </div>
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-success" type="submit">Create</button>
+        <button class="button" type="button" (click)="closeEventsDialog()">Cancel</button>
+      </footer>
+    </div>
+  </div>
+</form>

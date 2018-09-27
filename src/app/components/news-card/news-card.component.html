@@ -1,0 +1,187 @@
+  <div class="columns is-multiline">
+    <div class="column is-one-third" *ngFor="let news of newsCollection">
+      <div class="card">
+        <div class="card-image" (click)="openNewsCardDetail(news.id)">
+          <figure class="image">
+            <img *ngIf="news.news_photo_url" src="{{news.news_photo_url}}" alt="Placeholder image">
+          </figure>
+        </div>
+        <div class="card-content">
+          <div class="media">
+            <div class="media-left">
+              <figure class="image is-48x48">
+                <img class="is-rounded" src="{{news.news_author_photo_url}}" alt="avatar picture
+                      ">
+              </figure>
+            </div>
+            <div class="media-content">
+              <p class="title is-6">{{news.news_author_name}}</p>
+              <!-- <p class="subtitle is-6">{{news.news_author_email}}</p> -->
+              <!-- <p class="subtitle is-6">{{news.news_author_type}}</p> -->
+            </div>
+          </div>
+          <div class="content">
+            <h4 class="title is-4"  (click)="openNewsCardDetail(news.id)">{{news.news_title}}</h4>
+            <p>{{news.news_content | slice: 0: 145}} ...</p>
+            <span class="button is-link modal-button" (click)="openNewsDialogUpdate(news.id)">
+              <span class="icon">
+                <i class="fa fa-pencil"></i>
+              </span>
+              <span>Update</span>
+            </span>
+            <span class="button is-danger modal-button is-pulled-right" (click)="openNewsConfirmDeleteDialog(news.id)">
+              <span class="icon">
+                <i class="fa fa-trash"></i>
+              </span>
+              <span>Delete</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+    <div class="modal" [ngClass]="{'is-active': isNewsConfirmDeleteDialogOpen}" *ngIf="newsDocument">
+      <div class="modal-background" (click)="closeNewsConfirmDeleteDialog()"></div>
+      <div class="modal-card">
+        <header class="modal-card-head" >
+          <p class="modal-card-title">Are you sure want to permanently delete this post?</p>
+          <button class="delete" type="button" aria-label="close" (click)="closeNewsConfirmDeleteDialog()"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="card" >
+            <div class="card-image" *ngIf="newsDocument.news_photo_url">
+              <figure class="image is-4by3">
+                <img  src="{{newsDocument.news_photo_url}}" alt="Placeholder image">
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="media">
+                <div class="media-left">
+                  <figure class="image is-48x48">
+                    <img src="{{newsDocument.news_author_photo_url}}" alt="linda barret avatar
+                    ">
+                  </figure>
+                </div>
+                <div class="media-content">
+                  <p class="title is-4">{{newsDocument.news_author_name}}</p>
+                </div>
+              </div>
+              <div class="content">
+                <h4 class="subtitle is-4">{{newsDocument.news_title}}</h4>
+                {{newsDocument.news_content}}
+                <br>
+                <time *ngIf="dateTimeCreated">Datetime created: {{dateTimeCreated?.toDate() | date: 'medium'  }}</time>
+                <br>
+                <time *ngIf="dateTimeLastUpdated">Datetime last updated: {{dateTimeLastUpdated?.toDate() | date: 'medium'  }}</time>
+                <!-- <time>{{newsDocument.news_timestamp_post_created?.toDate() | date: 'medium'  }}</time>
+                <time>{{newsDocument.news_timestamp_post_last_updated?.toDate() | date: 'medium'  }}</time> -->
+                <!-- <time>Date created - {{dateTimeCreated}}</time>
+                <time>Date last updated: {{dateTimeLastUpdated}}</time> -->
+              </div>
+            </div>
+          </div>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-danger" type="submit" (click)="deleteNewsDocument()">Yes</button>
+          <button class="button" type="button" (click)="closeNewsConfirmDeleteDialog()">No</button>
+        </footer>
+      </div>
+    </div>
+
+
+    <!--Modal create and edit-->
+    <form  #newsForm="ngForm" (ngSubmit)="onSubmitUpdateNewsDocument(newsForm)" ngNativeValidate>
+      <div class="modal" [ngClass]="{'is-active': isNewsUpdateDialogOpen}">
+        <div class="modal-background" (click)="closeNewsDialogUpdate()"></div>
+        <div class="modal-card" *ngIf="newsDocument">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Update post</p>
+            <button class="delete" type="button" aria-label="close" (click)="closeNewsDialogUpdate()"></button>
+          </header>
+          <section class="modal-card-body">
+            <div class="field">
+              <label class="label">Title</label>
+              <div class="control">
+                <input class="input" name="news_title" type="text" placeholder="Title here" [(ngModel)]="newsDocument.news_title" maxlength="300"
+                  required>
+              </div>
+            </div>
+            
+            <div *ngIf="newsDocument.news_photo_url" [hidden]="!isNewsImageAvailable" class="field">
+                <label class="label">Photo</label>
+                <figure class="image is-128x128">
+                    <button  class="delete" type="button" aria-label="close" (click)="hideImage()"></button>
+                  <img src="{{newsDocument.news_photo_url}}">
+                  
+                </figure>
+            </div>
+            <div [hidden]="isNewsImageAvailable" class="field" >
+                <label class="label">Photo</label>
+              <input type="file" accept="image/*" name="file" (change)="onChangeImageHandler($event)" >
+            </div>
+            <div class="field" *ngIf="uploadPercent">
+              <progress class="progress is-success show-value" value="{{uploadPercent | async}}" max="100">{{uploadPercent | async}}%</progress>
+            </div>
+            <br>
+            <div class="field">
+              <label class="label">Content</label>
+              <div class="control">
+                <textarea class="textarea" name="news_content" type="text" rows="7" placeholder="Content here" [(ngModel)]="newsDocument.news_content"
+                  required></textarea>
+              </div>
+            </div>
+          </section>
+          <footer class="modal-card-foot">
+            <button [disabled]="isNewsDialogFormButtonDisabled" class="button is-success" type="submit">Update</button>
+            <button class="button" type="button" (click)="closeNewsDialogUpdate()">Cancel</button>
+          </footer>
+        </div>
+      </div>
+    </form>
+  </div>
+
+
+
+  <div class="modal" [ngClass]="{'is-active': isNewsCardOpen}">
+    <div class="modal-background" (click)="closeNewsCardDetail()"></div>
+    <div class="modal-content is-tiny">
+      <!-- content -->
+      <div class="card" *ngIf="newsDocument">
+        <div class="card-image">
+          <figure class="image">
+            <img *ngIf="newsDocument.news_photo_url" src="{{newsDocument.news_photo_url}}" alt="Placeholder image">
+          </figure>
+        </div>
+        <div class="card-content">
+          <div class="media">
+            <div class="media-left">
+              <figure class="image is-48x48">
+                <img src="{{newsDocument.news_author_photo_url}}" alt="avatar picture
+                ">
+              </figure>
+            </div>
+            <div class="media-content">
+              <p class="title is-4">{{newsDocument.news_author_name}}</p>
+            </div>
+          </div>
+          <div class="content">
+            <h4 class="subtitle is-4">{{newsDocument.news_title}}</h4>
+            {{newsDocument.news_content}}
+
+            <br>
+            <time *ngIf="dateTimeCreated">Datetime created: {{dateTimeCreated?.toDate() | date: 'medium'  }}</time>
+            <br>
+            <time *ngIf="dateTimeLastUpdated">Datetime last updated: {{dateTimeLastUpdated?.toDate() | date: 'medium'  }}</time>
+            <!-- <time>{{newsDocument.news_timestamp_post_created?.toDate() | date: 'medium'  }}</time>
+            <time>{{newsDocument.news_timestamp_post_last_updated?.toDate() | date: 'medium'  }}</time> -->
+          </div>
+        </div>
+      </div>
+      <!-- end content -->
+    </div>
+    <button class="modal-close is-large" aria-label="close" (click)="closeNewsCardDetail()"></button>
+  </div>
