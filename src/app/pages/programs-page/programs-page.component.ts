@@ -30,7 +30,7 @@ import { Observable, of } from 'rxjs';
 })
 export class ProgramsPageComponent implements OnInit {
   isProgramDialogOpen:boolean = false;
-  isProgramDialogFormButtonDisabled: boolean = true;
+  isProgramDialogFormButtonDisabled: boolean = false;
 
   //tab
   programType;
@@ -107,34 +107,42 @@ export class ProgramsPageComponent implements OnInit {
   }
 
   uploadHandler(event) {
-    this.file = event.target.files[0];
-    this.fileName = event.target.files[0].name;
-
-    this.programDocument.program_photo_name = this.fileName;
-    this.pushId = this.afDB.createId();
-    console.log('id used', this.pushId);
-    this.fileRef = this.storage.ref('stiGo/'+this.programType+'/' + this.pushId + '/' + this.fileName);
-    let task = this.fileRef.put(this.file);
-    this.uploadPercent = task.percentageChanges();
-    task.then(snapshot => {
-      this.fileRef.getDownloadURL().subscribe(url => {
-        if (url !== null) {
-          this.programDocument.program_photo_url = url;
-          console.log(url);
-          this.isProgramDialogFormButtonDisabled = false;
-          return true;
-        }
-      }, (error) => {
-        console.log('Error on get url, will delete', error);
-        this.storage.ref('stiGo/'+this.programType+'/' + this.pushId + '/' + this.fileName).delete();
-        this.closeProgramDialog();
-        return of(false);
+    if(event.target.files[0].name !== undefined){
+      this.isProgramDialogFormButtonDisabled = true;
+      this.file = event.target.files[0];
+      this.fileName = event.target.files[0].name;
+  
+      this.programDocument.program_photo_name = this.fileName;
+      this.pushId = this.afDB.createId();
+      console.log('id used', this.pushId);
+      this.fileRef = this.storage.ref('stiGo/'+this.programType+'/' + this.pushId + '/' + this.fileName);
+      let task = this.fileRef.put(this.file);
+      this.uploadPercent = task.percentageChanges();
+      task.then(snapshot => {
+        this.fileRef.getDownloadURL().subscribe(url => {
+          if (url !== null) {
+            this.programDocument.program_photo_url = url;
+            console.log(url);
+            this.isProgramDialogFormButtonDisabled = false;
+            return true;
+          }
+        }, (error) => {
+          console.log('Error on get url, will delete', error);
+          this.storage.ref('stiGo/'+this.programType+'/' + this.pushId + '/' + this.fileName).delete();
+          this.closeProgramDialog();
+          return of(false);
+        });
       });
-    });
+    } else {
+      return false;
+    }
   }
 
 
   onSubmitAddProgram() {
+    if(this.pushId == null){
+      this.pushId = this.afDB.createId();
+    }
     console.log('Add program');
     console.log(this.programDocument);
 

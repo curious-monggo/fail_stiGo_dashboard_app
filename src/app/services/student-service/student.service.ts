@@ -83,7 +83,7 @@ export class StudentService {
           const hashids = new hash('stiGo', 8, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890');
           const identifier = hashids.encode(studentDocument.student_id_number);
           let code = generatePassword.generate({
-            length:8,
+            length:2,
             numbers:true
           });
           console.log(identifier+'-'+code);

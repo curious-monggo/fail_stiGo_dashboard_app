@@ -61,7 +61,7 @@
               </div>
               <div class="field">
                   <label class="label">Photo</label>
-                  <input type="file" accept="image/*" (change)="uploadHandler($event)" required>
+                  <input type="file" accept="image/*" (change)="uploadHandler($event)">
                 </div>
                 <div class="field" *ngIf="uploadPercent">
                   <progress class="progress is-success show-value" value="{{uploadPercent | async}}" max="100">{{uploadPercent | async}}%</progress>
@@ -73,15 +73,6 @@
                     [(ngModel)]="programDocument.program_description" required></textarea>
                   </div>
               </div>
-              <!-- <div class="field">
-                  <label class="label">Photo Url</label>
-                  <div class="control">
-                    <input class="input" name="program_photo_url" type="url" placeholder="Page URL here"
-                    [(ngModel)]="programDocument.program_photo_url" required>
-                  </div>
-              </div> -->
-
-
         </ng-container>
 
 

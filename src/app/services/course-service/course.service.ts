@@ -56,14 +56,25 @@ export class CourseService {
      return this.courseDocument;
    }
    addCourseDocument(courseDocumentID ,courseDocument:Program) {
-
+    let acronym = courseDocument.program_acronym;
     this.courseDocumentRef = this.afDB.doc(`courses/${courseDocumentID}`);
     this.courseDocumentRef.set(courseDocument)
       .then((courseDocument) => {
         console.log('ID of course doc added ', courseDocumentID);
         this.courseDocumentRef = this.afDB.doc(`courses/${courseDocumentID}`);
 
-        this.courseDocumentRef.update({program_timestamp_post_created: firebase.firestore.FieldValue.serverTimestamp()});
+        let available_coursesRef = this.afDB.doc(
+          `available_programs/courses`
+        );
+
+        available_coursesRef.update({
+          currently_available_courses: firebase.firestore.FieldValue.arrayUnion(acronym)
+        });
+
+
+        this.courseDocumentRef.update(
+          {program_timestamp_post_created: firebase.firestore.FieldValue.serverTimestamp()}
+          );
     }).catch((error) =>{
         console.log('Error on course doc add or update ', error)
     })
@@ -77,6 +88,34 @@ export class CourseService {
     this.courseDocumentRef = this.afDB.doc(`courses/${id}`);
     this.courseDocumentRef.delete()
     this.storage.ref('stiGo/courses/'+id+'/'+fileName).delete();
+  }
+
+
+  getSubjects(course_id, year_level, term){
+    let ref = this.afDB.collection(`courses/${course_id}/${year_level}/${term}/subjects`);
+    ref.valueChanges();
+  }
+
+  addSubject(course_id, year_level, term, subjectDocument){
+    let ref = this.afDB.collection(`courses/${course_id}/${year_level}/${term}/subjects`);
+    ref.add(subjectDocument).then(onSnapshot => {
+      let refOnAddTimestamp = this.afDB.doc(
+        `courses/${course_id}/${year_level}/${term}/subjects/${onSnapshot.id}`
+        );
+        refOnAddTimestamp.update({course_timestamp_created: firebase.firestore.FieldValue.serverTimestamp()})
+    })
+    console.table(subjectDocument);
+  }
+
+  updateSubject(course_id, year_level, term, subject_id){
+    let ref = this.afDB.doc(`courses/${course_id}/${year_level}/${term}/subjects/${subject_id}`);
+    let subject = {
+      code:'',
+      name: '',
+      units:'',
+      pre_requisite:''
+    }
+    ref.update(subject);
   }
 
 }
