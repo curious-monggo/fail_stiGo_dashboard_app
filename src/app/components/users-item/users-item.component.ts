@@ -19,14 +19,17 @@ export class UsersItemComponent implements OnInit {
   studentCollection:Student[];
   registeredStudentCollection;
   sbgCollection;
+  membersCollection;
   
   isUsersUpdateDialogOpen:boolean = false;
+  isMembersUpdateDialogOpen:boolean = false;
   userId;
 
 
   isRegisteredStudentsTabActive = false;
   isAttendanceHostsActive = false
   isSbgTabActive = false;
+  isMembersTabActive = false;
 
   userType;
   userDocument={
@@ -39,6 +42,13 @@ export class UsersItemComponent implements OnInit {
     student_year_level:'',
     // student_timestamp_added:'',
     // student_timestamp_last_updated:''
+  };
+
+  memberObj={
+    user_email:'',
+    user_name:'',
+    user_photo_url:'',
+    user_type:''
   };
 
 
@@ -62,18 +72,25 @@ export class UsersItemComponent implements OnInit {
   registeredStudentsTabClicked() {
     this.isRegisteredStudentsTabActive = true;
     this.isAttendanceHostsActive = false;
-
+    this.isMembersTabActive = false;
     this.isSbgTabActive = false;
     this.getRegisteredStudents();
   }
   sbgTabClicked() {
     this.isRegisteredStudentsTabActive = false;
     this.isAttendanceHostsActive = false;
-
+    this.isMembersTabActive = false;
     this.isSbgTabActive = true;
     this.getSbg();
   }
+  membersTabClicked() {
+    this.isRegisteredStudentsTabActive = false;
+    this.isAttendanceHostsActive = false;
+    this.isSbgTabActive = false;
 
+    this.isMembersTabActive = true;
+    this.getMembers();
+  }
   getRegisteredStudents(){
     this.usersService.getRegisteredStudents().subscribe(studentCollection => {
       this.registeredStudentCollection = studentCollection;
@@ -84,6 +101,24 @@ export class UsersItemComponent implements OnInit {
     this.usersService.getSbg().subscribe(studentCollection => {
       this.sbgCollection = studentCollection;
       console.log(this.sbgCollection);
+    });
+  }
+  getMembers(){
+    this.usersService.getMembers().subscribe(studentCollection => {
+      this.membersCollection = studentCollection;
+      console.log(this.sbgCollection);
+    });
+  }
+  getMemberDocument(userId:string){
+    this.usersService.getUserDocument(userId).subscribe(memberDoc => {
+      this.memberObj = {
+        user_email:memberDoc.user_email,
+        user_name:memberDoc.user_name,
+        user_photo_url:memberDoc.user_photo_url,
+        user_type:memberDoc.user_type
+      };
+
+      console.log(this.userDocument)
     });
   }
   getUserDocument(userId:string){
@@ -112,6 +147,17 @@ export class UsersItemComponent implements OnInit {
     this.isUsersUpdateDialogOpen = false;
     
   }
+  openMembersDialogUpdate(userId:string) {
+    this.isMembersUpdateDialogOpen = true;
+    console.log('test')
+    this.userId = userId;
+    this.getMemberDocument(userId);
+  }
+  closeMembersDialogUpdate() {
+    this.userId = null;
+    this.isMembersUpdateDialogOpen = false;
+    
+  }
   clearInput(){
     this.userDocument = {
       user_type:'',
@@ -122,6 +168,12 @@ export class UsersItemComponent implements OnInit {
       student_program:'',
       student_year_level:''
     };
+    this.memberObj={
+      user_email:'',
+      user_name:'',
+      user_photo_url:'',
+      user_type:''
+    };
   }
   onSubmitUpdateNewsDocument() {
     console.log('id'+this.userId);
@@ -130,8 +182,17 @@ export class UsersItemComponent implements OnInit {
     this.closeUsersDialogUpdate();  
     this.clearInput();
   }
+  onSubmitUpdateMembersDocument() {
+    console.log('id'+this.userId);
 
+    this.usersService.updateUserDoc(this.userId, this.memberObj);
+    this.closeMembersDialogUpdate();  
+    this.clearInput();
+  }
   deleteStudentDocument(id){
+    this.studentService.deleteStudentDoc(id);
+  }
+  deleteMembersDocument(id){
     this.studentService.deleteStudentDoc(id);
   }
 }

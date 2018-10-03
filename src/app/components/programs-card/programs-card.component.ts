@@ -14,7 +14,7 @@ import { StrandService } from '../../services/strand-service/strand.service';
 import { Subscription, Observable, of } from 'rxjs';
 
 //for form reset
-import { NgForm } from '@angular/forms';
+
 import { Course } from '../../models/course/course';
 import { AuthService } from '../../services/auth-service/auth.service';
 
@@ -271,7 +271,7 @@ export class ProgramsCardComponent implements OnInit {
     this.isProgramConfirmDeleteDialogOpen = false;
   }
 
-  onSubmitUpdateProgramDocument(programForm: NgForm) {
+  onSubmitUpdateProgramDocument() {
     // console.log('Obj'+this.newsObj.()); 
     if (this.isProgramCourseTabActive == true) {
       this.courseService.updateCourseDocument(this.programDocumentId, this.programDocument);

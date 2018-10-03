@@ -1,15 +1,84 @@
-
 <section class="container">
   <div class="block">
-      <h1 class="title">
-          Attendance in STI PPC
-         </h1>
-         <!-- <a class="button is-primary">
-          <span class="icon">
-            <i class="fa fa-plus"></i>
-          </span>
-          <span>Add new event</span>
-        </a>        -->
+    <h1 class="title">
+      Attendance List
+    </h1>
+    <!-- <a class="button is-primary" (click)="openEventsDialog()">
+      <span class="icon">
+        <i class="fa fa-plus"></i>
+      </span>
+      <span>Add new event</span>
+    </a> -->
   </div>
+  <div class="tabs is-toggle">
+    <ul>
+      <li (click)="programCoursesTabSetToActive()" [ngClass]="{'is-active': isProgramCourseTabActive}">
+        <a>Courses</a>
+      </li>
+      <li (click)="programStrandsTabSetToActive()" [ngClass]="{'is-active': !isProgramCourseTabActive}">
+        <a>Strands</a>
+      </li>
+    </ul>
+  </div>
+  <div class="tabs is-small">
+    <ul>
+      <li *ngFor="let course of courseList" (click)="getAttendanceList(course)" >
+        <a>{{course}}</a>
+      </li>
+    </ul>
+  </div>
+  <h2 class="title">{{courseSelected}}</h2>
+  <table class="table is-hoverable is-fullwidth">
+      <thead>
+        <tr>
+  
+          <th>Student Number</th>
+          <th>Student First Name</th>
+          <th>Student Last Name</th>
+          <th>Year level</th>
+          <th>Sign in</th>
+          <th>Sign out</th>
+
+        </tr>
+      </thead>
+      <tfoot>
+        <tr>
+  
+          <th>Student Number</th>
+          <th>Student First Name</th>
+          <th>Student Last Name</th>
+          <th>Year level</th>
+          <th>Sign in</th>
+          <th>Sign out</th>
+        </tr>
+      </tfoot>
+      <tbody>
+        <tr *ngFor="let student of attendanceList">
+  
+          <th><a href="#">{{student.id}}</a></th>
+          <td>{{student.student_first_name}}</td>
+          <td>{{student.student_last_name}}</td>
+          <td>{{student.student_year_level}}</td>
+          <td>{{student.signIn_datetimestamp}}</td>
+          <td>{{student.signOut_datetimestamp}}</td>
+          <!-- <div class="buttons">
+            <a (click)="openUsersDialogUpdate(student.id)" class="button is-success">
+              <span class="icon">
+                <i class="fa fa-pencil"></i>
+              </span>
+            </a>
+            <a (click)="deleteStudentDocument(student.id)" class="button is-danger">
+              <span class="icon">
+                <i class="fa fa-trash"></i>
+              </span>
+            </a>
+          </div> -->
+  
+        </tr>
+      </tbody>
+    </table>
+
+
+
 
 </section>

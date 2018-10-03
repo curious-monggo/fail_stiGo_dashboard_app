@@ -6,7 +6,7 @@ export interface Event {
     event_description?:string;
     event_timestamp_post_created:any;
     event_timestamp_post_last_updated:any;
-    event_color?:string,
+    // event_color?:string,
     
     event_time_start?:string;
     event_time_end?:string;

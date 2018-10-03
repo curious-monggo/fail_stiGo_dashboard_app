@@ -45,6 +45,7 @@ import { StudentsItemComponent } from './components/students-item/students-item.
 import { StudentsPageComponent } from './pages/students-page/students-page.component';
 import { AttendancePageComponent } from './pages/attendance-page/attendance-page.component';
 
+
   const appRoutes: Routes = [
     {
       path:'',
@@ -76,7 +77,7 @@ import { AttendancePageComponent } from './pages/attendance-page/attendance-page
       component: StudentsPageComponent
     },
     {
-      path: 'attendance',
+      path: 'attendance/:id',
       component: AttendancePageComponent
     },
     {
@@ -86,8 +87,6 @@ import { AttendancePageComponent } from './pages/attendance-page/attendance-page
     }
   ];
 
-
-  
 @NgModule({
   declarations: [
     AppComponent,
@@ -105,20 +104,17 @@ import { AttendancePageComponent } from './pages/attendance-page/attendance-page
     EventCalendarComponent,
     StudentsItemComponent,
     StudentsPageComponent,
-    AttendancePageComponent,
-    
-
+    AttendancePageComponent,    
   ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(appRoutes),
     FormsModule, 
-    AngularFireModule.initializeApp(environment.firebaseConfig, 'stiGoDashboard'),
+    AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule, // imports firebase/firestore, only needed for database features
     AngularFireAuthModule, // imports firebase/auth, only needed for auth features,
     AngularFireStorageModule, // imports firebase/storage only needed for storage features
     FullCalendarModule
-
   ],
   providers: [AuthService, AngularFireDatabase, NewsCardComponent, ProgramsCardComponent],
   bootstrap: [AppComponent]

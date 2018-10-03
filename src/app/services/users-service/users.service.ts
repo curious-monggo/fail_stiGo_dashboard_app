@@ -62,6 +62,21 @@ export class UsersService {
       );
       return this.usersCollection;
    }
+
+   getMembers(){
+    this.usersCollectionRef = this.afDb.collection('users', ref => 
+      ref.where('user_type', '==', 'Member'));
+      this.usersCollection = this.usersCollectionRef.snapshotChanges().pipe(
+        map(actions => actions.map(a => {
+          const data = a.payload.doc.data() as User;
+          const id = a.payload.doc.id;
+          return { id, ...data };
+        }))
+      );
+      return this.usersCollection;
+   }
+
+
    getUserDocument(id:string) {
     this.userDocumentRef = this.afDb.doc(`users/${id}`);
     this.userDocument = this.userDocumentRef.valueChanges();

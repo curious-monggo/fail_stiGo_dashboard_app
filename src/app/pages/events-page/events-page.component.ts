@@ -24,7 +24,7 @@ export class EventsPageComponent implements OnInit {
     event_description:'',
     event_time_start:'',
     event_time_end:'',
-    event_color:'',
+  //  event_color:'',
 
 
     event_author_id:'',
@@ -79,7 +79,7 @@ export class EventsPageComponent implements OnInit {
       // event_timestamp_post_created:'',
       event_time_start:'',
       event_time_end:'',
-      event_color:'',
+      // event_color:'',
   
   
       event_author_id:'',
