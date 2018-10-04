@@ -1,0 +1,469 @@
+<div class="tabs">
+  <ul>
+    <li (click)="programCoursesTabSetToActive()" [ngClass]="{'is-active': isProgramCourseTabActive}">
+      <a>Courses</a>
+    </li>
+    <li (click)="programStrandsTabSetToActive()" [ngClass]="{'is-active': !isProgramCourseTabActive}">
+      <a>Strands</a>
+    </li>
+  </ul>
+</div>
+
+
+<div class="columns is-multiline">
+  <div class="column is-one-third" *ngFor="let programDocument of programCollection">
+    <div class="card">
+      <div class="card-image">
+        <figure class="image" (click)="openProgramsCardDetail(programDocument.id)">
+          <img src="{{programDocument.program_photo_url}}" alt="Placeholder image">
+        </figure>
+      </div>
+      <div class="card-content">
+        <div class="media">
+          <div class="media-left">
+            <figure class="image is-48x48">
+              <img class="is-rounded" src="{{programDocument.program_author_photo_url}}"
+                    >
+            </figure>
+          </div>
+          <div class="media-content">
+            <p class="title is-6">{{programDocument.program_author_name}}</p>
+            <!-- <p class="subtitle is-6">{{news.news_author_email}}</p> -->
+          </div>
+        </div>
+        <div class="content">
+          <h4 class="title is-4">
+            <a>{{programDocument.program_acronym}}</a>
+          </h4>
+          <p>{{programDocument.program_name | slice: 0: 145}}</p>
+          <p>{{programDocument.program_description | slice: 0: 300}}</p>
+          <span class="button is-link modal-button"
+          (click)="openUpdateChooseActionDialog(programDocument.id)">
+            <span class="icon">
+              <i class="fa fa-pencil"></i>
+            </span>
+            <span>Update</span>
+          </span>
+          <span class="button is-danger modal-button is-pulled-right" 
+          (click)="openProgramConfirmDeleteDialog(programDocument.id)">
+            <span class="icon">
+              <i class="fa fa-trash"></i>
+            </span>
+            <span>Delete</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" [ngClass]="{'is-active': isProgramConfirmDeleteDialogOpen}" >
+    <div class="modal-background" (click)="closeProgramConfirmDeleteDialog()"></div>
+    <div class="modal-card"  *ngIf="programDocument">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Are you sure want to permanently delete this post?</p>
+        <button class="delete" type="button" aria-label="close" (click)="closeProgramConfirmDeleteDialog()"></button>
+      </header>
+      <section class="modal-card-body">
+    <div class="card">
+
+      <div class="card-image">
+        <figure class="image">
+          <img src="{{programDocument.program_photo_url}}" alt="Placeholder image">
+        </figure>
+      </div>
+      <div class="card-content">
+        <div class="media">
+          <div class="media-left">
+            <figure class="image is-48x48">
+              <img class="is-rounded" src="{{programDocument.program_author_photo_url}}"
+                    >
+            </figure>
+          </div>
+          <div class="media-content">
+            <p class="title is-6">{{programDocument.program_author_name}}{{programDocument.program_photo_name}}</p>
+            <!-- <p class="subtitle is-6">{{news.news_author_email}}</p> -->
+            <p class="subtitle is-6">user type</p>
+          </div>
+        </div>
+        <div class="content">
+          <h4 class="title is-4">
+            <a>{{programDocument.program_acronym}}</a>
+          </h4>
+          <p>{{programDocument.program_name | slice: 0: 145}}</p>
+        </div>
+      </div>
+    </div>
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-danger" type="submit" 
+        (click)="deleteProgramDocument()">Yes</button>
+        <button class="button" type="button" (click)="closeProgramConfirmDeleteDialog()">No</button>
+      </footer>
+    </div>
+  </div>
+
+ <!--Modal create and edit-->
+<form (ngSubmit)="onSubmitUpdateProgramDocument()" ngNativeValidate>
+    <div class="modal" [ngClass]="{'is-active': isProgramUpdateDialogOpen}">
+      <div class="modal-background"  (click)="closeProgramDocumentDialogUpdate()"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Update program</p>
+          <button class="delete" type="button" aria-label="close" (click)="closeProgramDocumentDialogUpdate()"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="field">
+            <label class="label">Acronym</label>
+            <div class="control">
+              <input class="input" name="program_acronym" type="text" placeholder="Acronym here"
+              [(ngModel)]="programDocument.program_acronym" maxlength="300" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Name</label>
+            <div class="control">
+              <input class="input" name="program_name" type="text" placeholder="Name here"
+              [(ngModel)]="programDocument.program_name" required>
+            </div>
+          </div>
+          <div [hidden]="!isProgramImageAvailable" class="field">
+              <label class="label">Photo</label>
+              <figure class="image is-128x128">
+                  <button  class="delete" type="button" aria-label="close" (click)="hideImage()"></button>
+                <img src="{{programDocument.program_photo_url}}">
+              </figure>
+          </div>
+          <div [hidden]="isProgramImageAvailable" class="field" >
+              <label class="label">Photo</label>
+            <input type="file" accept="image/*" name="file" (change)="onChangeImageHandler($event)" >
+          </div>
+          <div class="field" *ngIf="uploadPercent">
+            <progress class="progress is-success show-value" value="{{uploadPercent | async}}" max="100">{{uploadPercent | async}}%</progress>
+          </div>
+          <div class="field">
+            <label class="label">Description</label>
+            <div class="control">
+              <textarea class="textarea" name="program_page_url"  rows="7" type="text" placeholder="Description here"
+              [(ngModel)]="programDocument.program_description" required></textarea>
+            </div>
+        </div>          
+       
+        </section>
+        <footer class="modal-card-foot">
+          <button [disabled]="isProgramDialogFormButtonDisabled" class="button is-success" type="submit">Update</button>
+          <button class="button" type="button" (click)="closeProgramDocumentDialogUpdate()">Cancel</button>
+        </footer>
+      </div>
+    </div>
+  </form>
+
+    <div class="modal" [ngClass]="{'is-active': isUpdateChooseActionDialogOpen}">
+      <div class="modal-background"  (click)="closeUpdateChooseActionDialog()"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Please choose which action you would like to take</p>
+          <button class="delete" type="button" aria-label="close" (click)="closeUpdateChooseActionDialog()"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="control">
+            <label class="radio">
+              <input type="radio" name="update_course" [checked]="isUpdateCourseChosen" (click)="onUpdateCourseClicked()">
+              Update the course 
+            </label>
+            <label class="radio">
+              <input type="radio" name="add_subject" [checked]="!isUpdateCourseChosen" (click)="onUpdateCourseNotClicked()">
+              Add subjects/courses 
+            </label>
+          </div>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success" type="button" (click)="updateCourseWrapper()">Choose</button>
+          <button class="button" type="button" (click)="closeUpdateChooseActionDialog()">Cancel</button>
+        </footer>
+      </div>
+    </div>
+
+
+<!-- 
+  <form (ngSubmit)="onSubmitUpdateProgramDocument()" ngNativeValidate>
+    <div class="modal" [ngClass]="{'is-active': isProgramUpdateDialogOpen}">
+      <div class="modal-background"  (click)="closeProgramDocumentDialogUpdate()"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Please program</p>
+          <button class="delete" type="button" aria-label="close" (click)="closeProgramDocumentDialogUpdate()"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="field">
+            <label class="label">Acronym</label>
+            <div class="control">
+              <input class="input" name="program_acronym" type="text" placeholder="Acronym here"
+              [(ngModel)]="programDocument.program_acronym" maxlength="300" required>
+            </div>
+          </div>
+  
+          <div class="field">
+            <label class="label">Name</label>
+            <div class="control">
+              <input class="input" name="program_name" type="text" placeholder="Name here"
+              [(ngModel)]="programDocument.program_name" required>
+            </div>
+          </div>
+
+          <div [hidden]="!isProgramImageAvailable" class="field">
+              <label class="label">Photo</label>
+              <figure class="image is-128x128">
+                  <button  class="delete" type="button" aria-label="close" (click)="hideImage()"></button>
+                <img src="{{programDocument.program_photo_url}}">
+                
+              </figure>
+          </div>
+          <div [hidden]="isProgramImageAvailable" class="field" >
+              <label class="label">Photo</label>
+            <input type="file" accept="image/*" name="file" (change)="onChangeImageHandler($event)" >
+          </div>
+          <div class="field" *ngIf="uploadPercent">
+            <progress class="progress is-success show-value" value="{{uploadPercent | async}}" max="100">{{uploadPercent | async}}%</progress>
+          </div>
+
+
+          <div class="field">
+            <label class="label">Description</label>
+            <div class="control">
+              <textarea class="textarea" name="program_page_url"  rows="7" type="text" placeholder="Description here"
+              [(ngModel)]="programDocument.program_description" required></textarea>
+            </div>
+        </div>
+          <a class="button is-fullwidth is-info" (click)="openSubjectFormAdd()">Add subjects</a>         
+        </section>
+        <footer class="modal-card-foot">
+          <button [disabled]="isProgramDialogFormButtonDisabled" class="button is-success" type="submit">Update</button>
+          <button class="button" type="button" (click)="closeProgramDocumentDialogUpdate()">Cancel</button>
+        </footer>
+      </div>
+    </div>
+  </form> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- <form (ngSubmit)="onSubmitUpdateProgramDocument()" ngNativeValidate>
+    <div class="modal" [ngClass]="{'is-active': isProgramUpdateDialogOpen}">
+      <div class="modal-background"  (click)="closeProgramDocumentDialogUpdate()"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Update program</p>
+          <button class="delete" type="button" aria-label="close" (click)="closeProgramDocumentDialogUpdate()"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="field">
+            <label class="label">Acronym</label>
+            <div class="control">
+              <input class="input" name="program_acronym" type="text" placeholder="Acronym here"
+              [(ngModel)]="programDocument.program_acronym" maxlength="300" required>
+            </div>
+          </div>
+  
+          <div class="field">
+            <label class="label">Name</label>
+            <div class="control">
+              <input class="input" name="program_name" type="text" placeholder="Name here"
+              [(ngModel)]="programDocument.program_name" required>
+            </div>
+          </div>
+
+          <div [hidden]="!isProgramImageAvailable" class="field">
+              <label class="label">Photo</label>
+              <figure class="image is-128x128">
+                  <button  class="delete" type="button" aria-label="close" (click)="hideImage()"></button>
+                <img src="{{programDocument.program_photo_url}}">
+                
+              </figure>
+          </div>
+          <div [hidden]="isProgramImageAvailable" class="field" >
+              <label class="label">Photo</label>
+            <input type="file" accept="image/*" name="file" (change)="onChangeImageHandler($event)" >
+          </div>
+          <div class="field" *ngIf="uploadPercent">
+            <progress class="progress is-success show-value" value="{{uploadPercent | async}}" max="100">{{uploadPercent | async}}%</progress>
+          </div>
+
+
+          <div class="field">
+            <label class="label">Description</label>
+            <div class="control">
+              <textarea class="textarea" name="program_page_url"  rows="7" type="text" placeholder="Description here"
+              [(ngModel)]="programDocument.program_description" required></textarea>
+            </div>
+        </div>
+          <a class="button is-fullwidth is-info" (click)="openSubjectFormAdd()">Add subjects</a>         
+        </section>
+        <footer class="modal-card-foot">
+          <button [disabled]="isProgramDialogFormButtonDisabled" class="button is-success" type="submit">Update</button>
+          <button class="button" type="button" (click)="closeProgramDocumentDialogUpdate()">Cancel</button>
+        </footer>
+      </div>
+    </div>
+  </form> -->
+
+</div>
+
+
+
+
+<div class="modal" [ngClass]="{'is-active': isProgramsCardActive}">
+  <div class="modal-background" (click)="closeProgramsCardDetail()"></div>
+  <div class="modal-content is-tiny">
+    <!-- content -->
+    <div class="card" *ngIf="programDocument">
+
+      
+      <div class="card-image">
+        <figure class="image">
+          <img src="{{programDocument.program_photo_url}}" alt="Placeholder image">
+        </figure>
+      </div>
+      <div class="card-content">
+        <div class="media">
+          <div class="media-left">
+            <figure class="image is-48x48">
+              <img class="is-rounded" src="{{programDocument.program_author_photo_url}}"
+                    >
+            </figure>
+          </div>
+          <div class="media-content">
+            <p class="title is-6">{{programDocument.program_author_name}}</p>
+            <!-- <p class="subtitle is-6">{{news.news_author_email}}</p> -->
+            <!-- <p class="subtitle is-6">user type</p> -->
+          </div>
+        </div>
+        <div class="content">
+          <h4 class="title is-4">
+            <a>{{programDocument.program_acronym}}</a>
+          </h4>
+          <p>{{programDocument.program_name | slice: 0: 145}}</p>
+          <p>{{programDocument.program_description}}</p>
+        </div>
+      </div>
+    </div>
+    <!-- end content -->
+  </div>
+  <button class="modal-close is-large" aria-label="close" (click)="closeProgramsCardDetail()"></button>
+</div>
+
+
+
+<form (ngSubmit)="onSubmitAddSubject()" ngNativeValidate>
+  <div class="modal" [ngClass]="{'is-active': isSubjectFormAddOpen}">
+
+    <div class="modal-background"  (click)="closeSubjectFormAdd()"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Add a course/subject</p>
+        <button class="delete" type="button" aria-label="close" (click)="closeSubjectFormAdd()"></button>
+      </header>
+      <section class="modal-card-body">
+        <div class="field">
+          <label class="label">Year level</label>
+          <div class="control has-icons-left">
+              <div class="select">
+                <select 
+                name="year_level" [(ngModel)]="year_level" required>
+                  <option value="" disabled>Year level</option>
+                  <option value="1st_year">1st year</option>
+                  <option value="2nd_year">2nd year</option>
+                  <option value="3rd_year">3rd year</option>
+                  <option value="4th_year">4th year</option>
+                </select>
+              </div>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">Term</label>
+            <div class="control has-icons-left">
+                <div class="select">
+                  <select 
+                  name="term" [(ngModel)]="term" required>
+                    <option value="" disabled>Term</option>
+                    <option value="1st_term">1st term</option>
+                    <option value="2nd_term">2nd term</option>
+                  </select>
+                </div>
+              </div>
+          </div>
+        <div class="field">
+          <label class="label">Course code</label>
+          <div class="control">
+            <input class="input" name="course_code" type="text" placeholder="Course code here"
+            [(ngModel)]="subjectDocument.course_code" maxlength="300" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Course name</label>
+          <div class="control">
+            <input class="input" name="course_name" type="text" placeholder="Course name here"
+            [(ngModel)]="subjectDocument.course_name" required>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Course units</label>
+          <div class="control">
+            <input class="input" name="course_units" type="number" placeholder="Number of units here"
+            [(ngModel)]="subjectDocument.course_units" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Pre-requisite(s)</label>
+          <div class="control">
+            <textarea class="textarea" name="course_pre_requisites"  rows="2" type="text" placeholder="Pre-requisite(s) here"
+            [(ngModel)]="subjectDocument.course_pre_requisites"></textarea>
+          </div>
+      </div>
+        
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-success" type="submit">Add</button>
+        <button class="button" type="button" (click)="closeSubjectFormAdd()">Cancel</button>
+      </footer>
+    </div>
+  </div>
+</form>
+
+<!-- <div class="modal" [ngClass]="{'is-active': isUpdateProgramActionOpen}">
+
+  <div class="modal-background"  (click)="closeSubjectFormAdd()"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Please choose which action you would like to take</p>
+      <button class="delete" type="button" aria-label="close" (click)="closeSubjectFormAdd()"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="control">
+        <label class="radio">
+          <input type="radio" name="attendance" [checked]="isAttendanceEnabled" (click)="enableAttendance()">
+          Update course 
+        </label>
+        <label class="radio">
+          <input type="radio" name="attendance" [checked]="!isAttendanceEnabled" (click)="disableAttendance()">
+          Add subjects/courses 
+        </label>
+      </div>
+      
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success" type="submit">Add</button>
+      <button class="button" type="button" (click)="closeSubjectFormAdd()">Cancel</button>
+    </footer>
+  </div>
+</div> -->

@@ -1,0 +1,13 @@
+progress.show-value {
+    position: relative;
+  }
+  
+  progress.show-value:after {
+    content: attr(value)'%';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: calc(1rem / 1.5);
+    line-height: 1rem;
+  }

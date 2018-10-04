@@ -1,0 +1,99 @@
+<section class="container">
+  <div class="block">
+    <h1 class="title">
+      Users in STI PPC
+    </h1>
+    <a class="button is-primary" (click)="openUsersDialog()">
+      <span class="icon">
+        <i class="fa fa-plus"></i>
+      </span>
+      <span>Add new user</span>
+    </a>
+  </div>
+  <!-- <div class="notification is-danger">
+      <button class="delete" (click)="closeNotification()"></button>
+      Student with the same Student Id Number <strong>already exists</strong>. Please update or delete the existing student to continue.
+    </div> -->
+  <app-users-item></app-users-item>
+
+</section>
+
+<!--Modal create and edit-->
+<form (ngSubmit)="onSubmitAddUser()" ngNativeValidate>
+  <div class="modal" [ngClass]="{'is-active': isUsersDialogOpen}">
+    <div class="modal-background" (click)="closeUsersDialog()"></div>
+
+    <div class="modal-card">
+
+      <header class="modal-card-head">
+        <p class="modal-card-title">Add new student</p>
+        <button class="delete" type="button" aria-label="close" (click)="closeUsersDialog()"></button>
+      </header>
+      <section class="modal-card-body">
+        <div class="field">
+          <label class="label">Student ID Number</label>
+          <div class="control">
+            <input class="input" name="student_id_number" type="number" placeholder="Student Number here" [(ngModel)]="studentDocument.student_id_number"
+              required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Student First Name</label>
+          <div class="control">
+            <input class="input" name="student_first_name" type="text" placeholder="First name here" [(ngModel)]="studentDocument.student_first_name"
+              required>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Student Middle Name</label>
+          <div class="control">
+            <input class="input" name="student_middle_name" type="text" placeholder="Mddle name here" [(ngModel)]="studentDocument.student_middle_name"
+              required>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Student Last Name</label>
+          <div class="control">
+            <input class="input" name="student_last_name" type="text" placeholder="Last name here" [(ngModel)]="studentDocument.student_last_name"
+              required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Student Program</label>
+          <div class="control">
+            <input class="input" name="student_program" type="text" placeholder="Program name here" [(ngModel)]="studentDocument.student_program"
+              required>
+          </div>
+        </div>
+
+        <div class="field">
+            <label class="label">Student Year level</label>
+          <div class="control has-icons-left">
+            <div class="select">
+              <select name="student_year_level" [(ngModel)]="studentDocument.student_year_level" required>
+                <option value="" disabled>Year level</option>
+                <option value="Grade 11">Grade 11</option>
+                <option value="Grade 12">Grade 12</option>
+                <option value="1st year">1st year</option>
+                <option value="2nd year">2nd year</option>
+                <option value="3rd year">3rd year</option>
+                <option value="4th year">4th year</option>
+              </select>
+            </div>
+          </div>
+
+          <span class="icon is-left">
+            <i class="fa fa-user-graduate"></i>
+          </span>
+        </div>
+
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-success" type="submit">Add</button>
+        <button class="button" type="button" (click)="closeUsersDialog()">Cancel</button>
+      </footer>
+    </div>
+  </div>
+</form>

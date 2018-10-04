@@ -1,0 +1,99 @@
+<div *ngIf="calendarOptions" style="overflow: auto">
+    <ng-fullcalendar #ucCalendar [options]="calendarOptions" [(eventsModel)]="test"
+    (eventClick)="eventClick($event.detail)" (eventDrop)="updateEvent($event.detail)"
+    (eventResize)="updateEvent($event.detail)" (clickButton)="clickButton($event.detail)">
+</ng-fullcalendar>
+</div>
+
+<form (ngSubmit)="onSubmitUpdateEventDocument()" ngNativeValidate>
+  <div class="modal" [ngClass]="{'is-active': isUpdateEventDialogOpen}">
+    <div class="modal-background"  (click)="closeEventsDialog()"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Update/Delete event</p>
+        <button class="delete" type="button" aria-label="close" (click)="closeEventsDialog()"></button>
+      </header>
+      <section class="modal-card-body">
+        <div class="field">
+          <label class="label">Event name</label>
+          <div class="control">
+            <input class="input" name="event_name" type="text" placeholder="Event name here"
+            [(ngModel)]="eventDocument.event_name" maxlength="28" required>
+          </div>
+        </div>
+        <div class="field">
+            <label class="label">Event location</label>
+            <div class="control">
+              <input class="input" name="event_location" type="text" placeholder="Event location here"
+              [(ngModel)]="eventDocument.event_location" maxlength="300" required>
+            </div>
+          </div>
+        <div class="field">
+          <label class="label">Event description</label>
+          <div class="control">
+            <textarea class="textarea" name="event_description" type="text" rows="3" placeholder="Event description here"
+            [(ngModel)]="eventDocument.event_description" required></textarea>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Event date</label>
+          <div class="control">
+            <input class="date" name="event_date" type="date" [(ngModel)]="eventDocument.event_date" required>
+          </div>
+        </div>
+        <!-- <div class="field">
+            <label class="label">Event color</label>
+            <div class="control">
+              <input placeholder="In hex format, Ex: #0000" class="input" name="event_color" type="text" [(ngModel)]="eventDocument.event_color" required>
+            </div>
+          </div> -->
+        <div class="field">
+          <label class="label">Event start time</label>
+          <div class="control">
+            <input class="date" name="event_time_start" type="time" [(ngModel)]="eventDocument.event_time_start" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Event end time</label>
+          <div class="control">
+            <input class="date" name="event_time_end" type="time" [(ngModel)]="eventDocument.event_time_end" required>
+          </div>
+        </div>
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-success" type="submit">Update</button>
+        <button class="button" type="button" (click)="closeEventsDialog()">Cancel</button>
+        <button class="button is-danger is-pulled-right" type="button" (click)="deleteEvent()">Delete</button>
+      </footer>
+    </div>
+  </div>
+</form>
+
+
+<div class="modal" [ngClass]="{'is-active': isUpdateChooseActionDialogOpen}">
+  <div class="modal-background"  (click)="closeUpdateChooseActionDialog()"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Please choose which action you would like to take</p>
+      <button class="delete" type="button" aria-label="close" (click)="closeUpdateChooseActionDialog()"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="control">
+        <label class="radio">
+          <input type="radio" name="update_event" [checked]="isUpdateEventChosen" (click)="onUpdateEventClicked()">
+          Update the event 
+        </label>
+        <label class="radio">
+          <input type="radio" name="view_attendance_list" [checked]="!isUpdateEventChosen" (click)="onUpdateEventNotClicked()">
+          View Attendance list
+        </label>
+      </div>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success" type="button" (click)="updateEventWrapper()">Choose</button>
+      <button class="button" type="button" (click)="closeUpdateChooseActionDialog()">Cancel</button>
+    </footer>
+  </div>
+</div>
