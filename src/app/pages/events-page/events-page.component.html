@@ -48,6 +48,12 @@
               maxlength="300" required>
           </div>
         </div>
+        <div class="field">
+          <input type="file" accept="image/*" (change)="uploadHandler($event)" >
+        </div>
+        <div class="field" *ngIf="uploadPercent">
+          <progress class="progress is-success show-value" value="{{uploadPercent | async}}" max="100">{{uploadPercent | async}}%</progress>
+        </div>
 <!-- 
         <div class="field">
           <label class="label">Event color</label>
@@ -89,7 +95,7 @@
           </div>
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-success" type="submit">Create</button>
+        <button [disabled]="isEventsDialogFormButtonDisabled" class="button is-success" type="submit">Create</button>
         <button class="button" type="button" (click)="closeEventsDialog()">Cancel</button>
       </footer>
     </div>

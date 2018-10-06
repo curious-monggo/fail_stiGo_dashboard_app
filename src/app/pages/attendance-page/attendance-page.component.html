@@ -22,12 +22,12 @@
   </div>
   <div class="tabs is-small">
     <ul>
-      <li *ngFor="let course of courseList" (click)="getAttendanceList(course)" >
-        <a>{{course}}</a>
+      <li *ngFor="let program of availablePrograms" (click)="getAttendanceList(program)" >
+        <a>{{program}}</a>
       </li>
     </ul>
   </div>
-  <h2 class="title">{{courseSelected}}</h2>
+  <h2 class="title">{{programSelected}}</h2>
   <table class="table is-hoverable is-fullwidth">
       <thead>
         <tr>

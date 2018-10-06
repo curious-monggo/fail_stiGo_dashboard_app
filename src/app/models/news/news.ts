@@ -13,6 +13,5 @@ export interface News {
     news_author_name?:string;
     news_author_email?:string;
     news_author_photo_url?:string;
-
-    
+    news_author_type?:string;
 }

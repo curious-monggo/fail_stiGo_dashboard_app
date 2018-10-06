@@ -28,6 +28,24 @@
               [(ngModel)]="eventDocument.event_location" maxlength="300" required>
             </div>
           </div>
+
+          <div *ngIf="eventDocument.event_photo_url" [hidden]="!isNewsImageAvailable" class="field">
+            <label class="label">Photo</label>
+            <figure class="image is-128x128">
+                <button  class="delete" type="button" aria-label="close" (click)="hideImage()"></button>
+              <img src="{{eventDocument.event_photo_url}}">
+              
+            </figure>
+        </div>
+        <div [hidden]="isEventImageAvailable" class="field" >
+            <label class="label">Photo</label>
+          <input type="file" accept="image/*" name="file" (change)="onChangeImageHandler($event)" >
+        </div>
+        <div class="field" *ngIf="uploadPercent">
+          <progress class="progress is-success show-value" value="{{uploadPercent | async}}" max="100">{{uploadPercent | async}}%</progress>
+        </div>
+        <br>
+
         <div class="field">
           <label class="label">Event description</label>
           <div class="control">
@@ -63,7 +81,7 @@
         </div>
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-success" type="submit">Update</button>
+        <button [disabled]="isEventDialogFormButtonDisabled" class="button is-success" type="submit">Update</button>
         <button class="button" type="button" (click)="closeEventsDialog()">Cancel</button>
         <button class="button is-danger is-pulled-right" type="button" (click)="deleteEvent()">Delete</button>
       </footer>

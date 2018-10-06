@@ -8,6 +8,7 @@ export interface Program {
     program_photo_name?:string;
 
     program_timestamp_post_created?:any;
+    program_timestamp_post_last_updated?:any;
 
     program_author_id?:string;
     program_author_name?:string;

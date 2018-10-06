@@ -10,11 +10,11 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class AttendancePageComponent implements OnInit {
   isProgramCourseTabActive: boolean = true;
-  courseList;
+  availablePrograms;
   attendanceList;
   private sub: any;
   eventId;
-  courseSelected;
+  programSelected;
   constructor(private attendanceService: AttendanceService, private route: ActivatedRoute) { }
 
   ngOnInit() {
@@ -29,30 +29,41 @@ export class AttendancePageComponent implements OnInit {
   }
   programCoursesTabSetToActive() {
     this.isProgramCourseTabActive = true;
+    console.log(this.isProgramCourseTabActive);
+    this.getAvailableCourses();
+    
   //  this.getProgramCourseCollection();
 
   }
   programStrandsTabSetToActive() {
     this.isProgramCourseTabActive = false;
    // this.getProgramStrandCollection();
+   this.getAvailableStrands();
+   console.log(this.isProgramCourseTabActive);
   }
   getAvailableCourses(){
     this.attendanceService.getProgramsCoursesAttended().subscribe(courses => {
-      this.courseList = courses.currently_available_courses;
-      console.log(this.courseList);
+      this.availablePrograms = courses.currently_available_courses;
+      console.log(this.availablePrograms);
     });
   }
-  getAttendanceList(course){
-    this.attendanceService.getAttendanceList(this.eventId,course).subscribe(list => {
+  getAvailableStrands(){
+    this.attendanceService.getProgramsStrandsAttended().subscribe(strands => {
+      this.availablePrograms = strands.currently_available_strands;
+      console.log(this.availablePrograms);
+    });
+  }
+  getAttendanceList(program){
+    this.attendanceService.getAttendanceList(this.eventId,program).subscribe(list => {
       console.log(list);
       this.attendanceList = list;
-      this.courseSelected = course;
+      this.programSelected = program;
       
     })
   }
 
-  getCourseAttendanceList(course){
-    console.log(course);
+  // getCourseAttendanceList(course){
+  //   console.log(course);
     
-  }
+  // }
 }

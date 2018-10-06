@@ -18,7 +18,7 @@ export class StudentsItemComponent implements OnInit {
   studentIdNumber;
 
   studentDocument:Student={
-    student_id_number:'',
+    student_id_number:0,
     student_first_name:'',
     student_middle_name:'',
     student_last_name:'',
@@ -78,7 +78,7 @@ export class StudentsItemComponent implements OnInit {
   }
   clearInput(){
     this.studentDocument = {
-      student_id_number:'',
+      student_id_number:0,
       student_first_name:'',
       student_middle_name:'',
       student_last_name:'',

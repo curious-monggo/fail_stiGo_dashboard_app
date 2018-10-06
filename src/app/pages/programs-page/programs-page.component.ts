@@ -47,6 +47,7 @@ export class ProgramsPageComponent implements OnInit {
 
 
     program_timestamp_post_created:'',
+    program_timestamp_post_last_updated:'',
 
     program_author_id:'',
     program_author_name:'',
@@ -84,6 +85,7 @@ export class ProgramsPageComponent implements OnInit {
   
   
       program_timestamp_post_created:'',
+      program_timestamp_post_last_updated:'',
   
       program_author_id:'',
       program_author_name:'',

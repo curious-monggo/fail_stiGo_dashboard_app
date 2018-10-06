@@ -17,6 +17,7 @@ import { NgForm } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 
 import { AngularFireAuth } from 'angularfire2/auth';
+import { UserService } from '../../services/user-service/user.service';
 
 
 
@@ -46,7 +47,8 @@ export class NewsPageComponent implements OnInit {
     news_author_id: '',
     news_author_photo_url: '',
     news_author_name: '',
-    news_author_email: ''
+    news_author_email: '',
+    news_author_type:''
   };
 
   //file vars
@@ -55,16 +57,27 @@ export class NewsPageComponent implements OnInit {
   fileName;
   pushId;
   fileRef;
-
+  user_type;
+  user;
 
   constructor(
     private newsService: NewsService,
     private authService: AuthService,
     private afDB: AngularFirestore,
     private afAuth: AngularFireAuth,
-    private storage: AngularFireStorage
+    private storage: AngularFireStorage,
+    private userService: UserService
   ) { 
+    this.afAuth.authState.subscribe(user =>{
+      if(user){
+        this.user = user;
+        this.getUserDocument(user.uid);
 
+      }
+      else{
+        this.user = null;
+      }
+    });
     
   }
 
@@ -72,9 +85,12 @@ export class NewsPageComponent implements OnInit {
 
 
   }
-  // downloadReport(){
-
-  // }
+  getUserDocument(userId){
+    this.userService.getUserDocument(userId).subscribe(userDocument => {
+      console.table(userDocument);
+      this.user_type = userDocument.user_type;
+    });
+  }
   clearNewsDocOutput() {
     this.newsDocument = {
       news_photo_url: '',
@@ -89,7 +105,8 @@ export class NewsPageComponent implements OnInit {
       news_author_id: '',
       news_author_photo_url: '',
       news_author_name: '',
-      news_author_email: ''
+      news_author_email: '',
+      news_author_type:''
     };
   }
   openNewsDialog() {
@@ -150,6 +167,7 @@ export class NewsPageComponent implements OnInit {
     this.newsDocument.news_author_photo_url = this.authService.userObj.user_photo_url;
     this.newsDocument.news_author_name = this.authService.userObj.user_name;
     this.newsDocument.news_author_email = this.authService.userObj.user_email;
+    this.newsDocument.news_author_type = this.authService.user_type;
     console.log(this.newsDocument);
     this.newsService.addNewsDocument(this.pushId, this.newsDocument);
     this.closeNewsDialog();

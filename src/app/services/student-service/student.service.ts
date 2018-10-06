@@ -73,10 +73,11 @@ export class StudentService {
     .collection('students', ref => 
       ref.where('student_id_number', '==', studentDocument.student_id_number));
       this.studentCollection = this.studentCollectionRef.valueChanges();
-      this.studentCollection.subscribe((studentColl) => {
+      let studCollSubscription = this.studentCollection.subscribe((studentColl) => {
         if(studentColl.length >0){
           console.log('Student is already in the system');
           console.log(studentColl);
+          studCollSubscription.unsubscribe();
         }
         else {
           console.log('new student');
@@ -95,7 +96,7 @@ export class StudentService {
               this.studentDocumentRef.update({ student_timestamp_added:firebase.firestore.FieldValue.serverTimestamp()});
 
             });
-
+            studCollSubscription.unsubscribe();
         }
       });
     // this.studentDocumentRef = this.afDb.doc(`students/${studentIdNumber}`);

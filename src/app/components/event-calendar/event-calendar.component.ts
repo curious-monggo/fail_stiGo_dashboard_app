@@ -12,6 +12,7 @@ import { of } from 'rxjs';
 
 
 import { Router } from '@angular/router';
+import { AngularFireStorage } from 'angularfire2/storage';
 
 
 @Component({
@@ -30,7 +31,13 @@ export class EventCalendarComponent implements OnInit {
   isUpdateChooseActionDialogOpen = false;
   isUpdateEventChosen = true;
   isUpdateEventDialogOpen = false;
+  isEventDialogFormButtonDisabled = true;
+  isEventImageAvailable = true;
 
+  uploadPercent: Observable<number>;
+  file:any;
+  fileName;
+  fileRef;
 
   eventDocument = {
     event_author_email: '',
@@ -43,13 +50,15 @@ export class EventCalendarComponent implements OnInit {
     event_name: '',
     event_time_end: '',
     event_time_start: '',
+    event_photo_url: '',
+    event_photo_name: '',
     // event_color:''
     // event_timestamp_post_created: Object
   };
   eventId;
 
   @ViewChild(CalendarComponent) ucCalendar: CalendarComponent;
-  constructor(private eventService: EventService, private router: Router) {
+  constructor(private eventService: EventService, private router: Router, private storage: AngularFireStorage) {
 
     
   }
@@ -132,6 +141,8 @@ export class EventCalendarComponent implements OnInit {
     this.eventService.getEventDocument(eventId).subscribe(eventDoc => {
       console.log(eventDoc);
       this.eventDocument = {
+        event_photo_url: eventDoc.event_photo_url,
+        event_photo_name: eventDoc.event_photo_name,
         event_author_email: eventDoc.event_author_email,
         event_author_id: eventDoc.event_author_id,
         event_author_name: eventDoc.event_author_name,
@@ -166,6 +177,44 @@ export class EventCalendarComponent implements OnInit {
     this.eventId = null;
     this.closeUpdateEventDialogOpen();
   }
+  hideImage(){
+    this.isEventImageAvailable = false;
+  }
+  showImage(){
+    this.isEventImageAvailable = true;
+  }
+  
+  onChangeImageHandler(event) {
+    this.isEventDialogFormButtonDisabled = true;
+    this.fileRef = this.storage.ref('stiGo/events/'+this.eventId+'/'+this.eventDocument.event_photo_name).delete();
+
+    this.file = event.target.files[0];
+    this.fileName = event.target.files[0].name;
+
+    this.eventDocument.event_photo_name = this.fileName;
+
+    this.fileRef = this.storage.ref('stiGo/events/'+this.eventId+'/'+this.eventDocument.event_photo_name);
+
+    let task = this.fileRef.put(this.file);
+    this.uploadPercent = task.percentageChanges();
+    task.then(snapshot =>{
+      this.fileRef.getDownloadURL().subscribe(url =>{
+        if(url){
+          this.eventDocument.event_photo_url = url;
+          console.log(url);
+          this.isEventDialogFormButtonDisabled = false;
+          return true;
+        }  
+      }, (error)=>{
+          console.log('Error on get url, will delete',error);
+          this.storage.ref('stiGo/events/'+this.eventId+'/'+this.fileName).delete();
+          this.closeEventsDialog();
+          return of(false);
+      });
+    });
+  }
+
+
   onSubmitUpdateEventDocument(){
     console.log('id'+this.eventId);
     

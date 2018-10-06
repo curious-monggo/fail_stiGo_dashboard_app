@@ -28,6 +28,11 @@ export class AttendanceService {
     this.attendanceDocument = this.attendanceDocumentRef.valueChanges();
     return this.attendanceDocument;
   }
+  getProgramsStrandsAttended(){
+    this.attendanceDocumentRef = this.afDB.doc(`available_programs/strands`);
+    this.attendanceDocument = this.attendanceDocumentRef.valueChanges();
+    return this.attendanceDocument;
+  }
   getAttendanceList(eventId, program){
     this.attendanceCollectionRef = this.afDB.collection(`attendance/${eventId}/${program}`, ref => ref.orderBy('student_last_name'));
     this.attendanceCollection = this.attendanceCollectionRef.snapshotChanges().pipe(

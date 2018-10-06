@@ -23,7 +23,7 @@ export class StudentsPageComponent implements OnInit {
 
 
   studentDocument:Student={
-    student_id_number:'',
+    student_id_number:0,
     student_first_name:'',
     student_middle_name:'',
     student_last_name:'',
@@ -64,7 +64,7 @@ export class StudentsPageComponent implements OnInit {
   }
   clearInput(){
     this.studentDocument = {
-      student_id_number:'',
+      student_id_number:0,
       student_first_name:'',
       student_middle_name:'',
       student_last_name:'',
@@ -73,9 +73,6 @@ export class StudentsPageComponent implements OnInit {
     };
   }
   onSubmitAddStudent() {
-    console.log('Before the stud in init');
-    let student_id_number = this.studentDocument.student_id_number.toString();
-    console.log('after the stud in init '+this.studentDocument.student_id_number);
     console.log(this.studentDocument);
     this.studentService.addStudentDocument(this.studentDocument);
     // this.studentService.studentObjSubscription.unsubscribe();

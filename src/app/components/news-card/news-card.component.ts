@@ -1,3 +1,4 @@
+import { UserService } from './../../services/user-service/user.service';
 import { Component, OnInit } from '@angular/core';
 
 //Storage
@@ -14,6 +15,7 @@ import { Subscription, Observable, of } from 'rxjs';
 
 //for form reset
 import { NgForm } from '@angular/forms';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 
 @Component({
@@ -47,7 +49,8 @@ export class NewsCardComponent implements OnInit {
     news_author_id:'',
     news_author_photo_url:'',
     news_author_name:'',
-    news_author_email:''
+    news_author_email:'',
+    news_author_type:''
   };
 
   uploadPercent: Observable<number>;
@@ -56,25 +59,40 @@ export class NewsCardComponent implements OnInit {
   fileRef;
   dateTimeCreated;
   dateTimeLastUpdated;
-
+  user;
+  user_type;
 
 
   constructor(
     private newsService: NewsService,
-    private storage: AngularFireStorage
+    private storage: AngularFireStorage,
+    private afAuth: AngularFireAuth,
+    private userService: UserService
   ) {
 
-    
+    this.afAuth.authState.subscribe(user =>{
+      if(user){
+        this.user = user;
+        this.getUserDocument(user.uid);
+
+      }
+      else{
+        this.user = null;
+      }
+    });
   }
 
   ngOnInit(){
+
     this.getNewsCollection();
   }
 
-  test(){
-    console.log('Please reload');
+  getUserDocument(userId){
+    this.userService.getUserDocument(userId).subscribe(userDocument => {
+      console.table(userDocument);
+      this.user_type = userDocument.user_type;
+    });
   }
-
   getNewsCollection() {
     this.newsCollectionSubscription = this.newsService.getNewsCollection().
     subscribe(newsCollection => {
@@ -94,12 +112,12 @@ export class NewsCardComponent implements OnInit {
 
       this.dateTimeCreated = newsDocument.news_timestamp_post_created;
 
-      // // let dateLastUpdated = new Date(newsDocument.news_timestamp_post_last_updated.toDate());
-      // // let convertDateLastUpdatedToLocale = dateLastUpdated.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true, month: 'short', day: 'numeric', year: 'numeric' });
-      // // console.log(dateLastUpdated);
+      // // // let dateLastUpdated = new Date(newsDocument.news_timestamp_post_last_updated.toDate());
+      // // // let convertDateLastUpdatedToLocale = dateLastUpdated.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true, month: 'short', day: 'numeric', year: 'numeric' });
+      // // // console.log(dateLastUpdated);
 
       this.dateTimeLastUpdated = newsDocument.news_timestamp_post_last_updated;
-      console.log(newsDocument);
+      // console.log(newsDocument);
 
       this.newsDocument = {
         news_photo_name:newsDocument.news_photo_name,
@@ -107,12 +125,13 @@ export class NewsCardComponent implements OnInit {
         news_title:newsDocument.news_title,
         news_content:newsDocument.news_content,
 
-        // news_timestamp_post_created:this.dateTimeCreated,
-        // news_timestamp_post_last_updated:this.dateTimeLastUpdated,
+        // news_timestamp_post_created:newsDocument.news_timestamp_post_created,
+        // news_timestamp_post_last_updated:newsDocument.news_timestamp_post_last_updated,
         news_author_id:newsDocument.news_author_id,
         news_author_photo_url:newsDocument.news_author_photo_url,
         news_author_name:newsDocument.news_author_name,
-        news_author_email:newsDocument.news_author_email
+        news_author_email:newsDocument.news_author_email,
+        news_author_type:newsDocument.news_author_type
       };
     });
 
@@ -156,12 +175,13 @@ export class NewsCardComponent implements OnInit {
       news_content:'',
   
       // news_timestamp_post_created:'',
-        // news_timestamp_post_created:'',
-        // news_timestamp_post_last_updated:'',
+      // news_timestamp_post_created:'',
+      // news_timestamp_post_last_updated:'',
       news_author_id:'',  
       news_author_photo_url:'',
       news_author_name:'',
-      news_author_email:''
+      news_author_email:'',
+      news_author_type:''
     };
   }
   openNewsCardDetail(newsDocumentId:string) {

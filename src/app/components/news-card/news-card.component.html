@@ -17,24 +17,32 @@
             <div class="media-content">
               <p class="title is-6">{{news.news_author_name}}</p>
               <!-- <p class="subtitle is-6">{{news.news_author_email}}</p> -->
-              <!-- <p class="subtitle is-6">{{news.news_author_type}}</p> -->
+              <p class="subtitle is-6">{{news.news_author_type}}</p>
             </div>
           </div>
           <div class="content">
             <h4 class="title is-4"  (click)="openNewsCardDetail(news.id)">{{news.news_title}}</h4>
             <p>{{news.news_content | slice: 0: 145}} ...</p>
-            <span class="button is-link modal-button" (click)="openNewsDialogUpdate(news.id)">
-              <span class="icon">
-                <i class="fa fa-pencil"></i>
+            <p *ngIf="news.news_timestamp_post_created">Datetime created: {{news.news_timestamp_post_created.toDate()| date:'medium' }}</p>
+            <p *ngIf="news.news_timestamp_post_last_updated">Datetime last updated: {{news.news_timestamp_post_last_updated.toDate()| date:'medium'   }}</p>
+            <br>
+            <div class="options" *ngIf="user.uid === news.news_author_id && user_type === 'Registrar'
+                                     || user.uid === news.news_author_id && user_type === 'Instructor'
+                                     || user_type === 'Admin'">
+              <span class="button is-link modal-button" (click)="openNewsDialogUpdate(news.id)">
+                <span class="icon">
+                  <i class="fa fa-pencil"></i>
+                </span>
+                <span>Update</span>
               </span>
-              <span>Update</span>
-            </span>
-            <span class="button is-danger modal-button is-pulled-right" (click)="openNewsConfirmDeleteDialog(news.id)">
-              <span class="icon">
-                <i class="fa fa-trash"></i>
+              <span class="button is-danger modal-button is-pulled-right" (click)="openNewsConfirmDeleteDialog(news.id)">
+                <span class="icon">
+                  <i class="fa fa-trash"></i>
+                </span>
+                <span>Delete</span>
               </span>
-              <span>Delete</span>
-            </span>
+            </div>
+
           </div>
         </div>
       </div>

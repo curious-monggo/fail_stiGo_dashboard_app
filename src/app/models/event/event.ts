@@ -1,5 +1,10 @@
 export interface Event {
     id?:string;
+
+    event_photo_url?:string;
+    event_photo_name?:string;
+
+
     event_name?:string;
     event_date?:string;
     event_location?:string;
